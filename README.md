@@ -8,6 +8,10 @@ Local mode allows you to run The Context Company in a local-first way. This is 1
 
 **Local mode currently only supports Vercel AI SDK on Next.js**.
 
+<img src="./.github/assets/local.gif" />
+
+### Setup
+
 #### Step 1: Install dependencies
 
 ```Title pnpm
