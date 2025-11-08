@@ -1,5 +1,5 @@
 {
-  "name": "tcc-widget",
+  "name": "@contextcompany/widget",
   "version": "1.0.0",
   "description": "The Context Company Widget",
   "main": "./dist/index.js",
