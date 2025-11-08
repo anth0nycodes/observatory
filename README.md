@@ -4,9 +4,11 @@
 ## Overview
 The Context Company does agent observability. Learn more about us [here](https://www.thecontext.company/).
 
-## Local Mode Setup
+## Local Mode Setup (AI SDK + Next.js)
 
-Local mode allows you to run The Context Company in a local-first mode for AI SDK on Next.js. This is 100% open-source and requires **no account or API key**. To setup Local Mode, refer to the guide below or [our documentation](https://docs.thecontext.company/frameworks/ai-sdk/local).
+Local Mode allows you to run The Context Company in a local-first way. This is 100% open-source and requires **no account or API key**. To setup Local Mode, refer to the guide below or [our documentation](https://docs.thecontext.company/frameworks/ai-sdk/local).
+
+**Local Mode currently only supports Vercel AI SDK on Next.js**.
 
 #### Step 1: Install dependencies
 
