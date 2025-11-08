@@ -97,8 +97,8 @@ function DataBlock({
                 </p>
               )
             ) : viewSignal.value === "Markdown" ? (
-              <div className="prose text-xs">
-                <Markdown>{content ?? "No content"}</Markdown>
+              <div className="text-xs w-[95%]">
+                <Markdown className="prose">{content ?? "No content"}</Markdown>
               </div>
             ) : (
               <p className="text-xs font-mono text-gray-700">
