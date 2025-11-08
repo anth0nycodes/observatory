@@ -21,4 +21,22 @@ export default defineConfig([
     clean: true,
     external: ["@opentelemetry/api", "@vercel/otel"],
   },
+  // @contextcompany/otel/nextjs auto script
+  {
+    entry: { "nextjs/local/auto": "src/nextjs/local/auto.ts" },
+    outDir: "dist",
+    format: ["esm"],
+    platform: "node",
+    target: "es2020",
+    minify: true,
+    sourcemap: false,
+    splitting: true,
+    treeshake: true,
+    dts: true,
+    clean: true,
+    outExtension: () => ({
+      js: ".global.js",
+    }),
+    external: ["@opentelemetry/api", "@vercel/otel"],
+  },
 ]);

@@ -1,5 +1,11 @@
 # @contextcompany/otel
 
+## 1.0.9
+
+### Patch Changes
+
+- added auto module for nextjs local mode
+
 ## 1.0.8
 
 ### Patch Changes

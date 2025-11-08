@@ -1,6 +1,6 @@
 {
   "name": "@contextcompany/otel",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "The Context Company OpenTelemetry integration",
   "type": "module",
   "files": [
@@ -23,7 +23,9 @@
   },
   "scripts": {
     "build": "tsup",
-    "dev": "pnpm build --watch"
+    "dev": "pnpm build --watch",
+    "serve": "npx serve dist -p 3002 --cors",
+    "dev:all": "concurrently \"pnpm build --watch\" \"pnpm serve\""
   },
   "tsup": {
     "bundle": true,
@@ -78,6 +80,7 @@
     "@opentelemetry/sdk-trace-base": "^2.2.0",
     "@types/node": "^20",
     "@vercel/otel": "^2.0.1",
+    "concurrently": "^9.2.1",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3"
   }
