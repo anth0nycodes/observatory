@@ -1,13 +1,14 @@
 import { render } from "preact";
 import { Draggable } from "@/components/draggable";
 import {
+  hasUnseenFailuresSignal,
   widgetDimensionsSignal,
   widgetDockedSignal,
   widgetExpandedSignal,
   widgetPositionSignal,
 } from "@/state";
 import Popover from "@/components/popover/popover";
-import { syncTCCStore } from "@/hooks/useSyncTCCStore";
+import { useSyncTCCStore } from "@/hooks/useSyncTCCStore";
 import { Logo } from "./assets/logo";
 import {
   ChevronDown,
@@ -15,24 +16,34 @@ import {
   ChevronRight,
   ChevronUp,
 } from "lucide-preact";
+import { cn } from "./utils/cn";
 
 export function Widget() {
-  syncTCCStore();
+  useSyncTCCStore();
 
   return (
     <>
       <Draggable
         snapToCorner
-        onClick={() =>
-          (widgetExpandedSignal.value = !widgetExpandedSignal.value)
-        }
+        onClick={() => {
+          // if we're opening the widget, mark failures as "seen"
+          if (!widgetExpandedSignal.value) {
+            hasUnseenFailuresSignal.value = false;
+          }
+          widgetExpandedSignal.value = !widgetExpandedSignal.value;
+        }}
         positionSignal={widgetPositionSignal}
         dimensionsSignal={widgetDimensionsSignal}
       >
         {widgetDockedSignal.value === null ? (
-          <Logo />
+          <Logo fill={hasUnseenFailuresSignal.value ? "#fff" : undefined} />
         ) : (
-          <div className="text-gray-500 text-xs">
+          <div
+            className={cn(
+              "text-gray-500 text-xs",
+              hasUnseenFailuresSignal.value && "text-white"
+            )}
+          >
             {widgetDockedSignal.value === "left" && (
               <ChevronRight className="w-4 h-4" />
             )}

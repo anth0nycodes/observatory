@@ -21,6 +21,7 @@ export const widgetDimensionsSignal = signal<{ width: number; height: number }>(
 
 export type DockedMode = "left" | "right" | "top" | "bottom";
 export const widgetDockedSignal = signal<DockedMode | null>(null);
+export const hasUnseenFailuresSignal = signal(false);
 
 // Popover UI
 export const popoverDimensionSignal = signal<{ width: number; height: number }>(
@@ -65,7 +66,9 @@ export const failuresSignal = computed(() => {
     .flat()
     .map((toolCall) => ({ ...toolCall, type: "toolCall" })) as FailedToolCall[];
 
-  return [...runs, ...toolCalls].filter((item) => item.statusCode === 2);
+  return [...runs, ...toolCalls]
+    .filter((item) => item.statusCode === 2)
+    .sort((a, b) => b.startTime.getTime() - a.startTime.getTime());
 });
 
 // Dropdown & Context Menu

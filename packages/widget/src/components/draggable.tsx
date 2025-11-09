@@ -5,6 +5,7 @@ import { getClosestCorner, getNewCornerPosition } from "@/utils/corners";
 import { Signal } from "@preact/signals";
 import {
   DockedMode,
+  hasUnseenFailuresSignal,
   widgetCornerSignal,
   widgetDockedSignal,
   widgetPositionSignal,
@@ -117,16 +118,16 @@ export function Draggable({
         const changeInMouseY = currentMouseY - initialMouseY;
 
         const isOutsideWindowX =
-          currentMouseX <= 0 || currentMouseX >= window.innerWidth;
+          currentMouseX <= 0 || currentMouseX >= window.innerWidth - 3;
         const isOutsideWindowY =
-          currentMouseY <= 0 || currentMouseY >= window.innerHeight;
+          currentMouseY <= 0 || currentMouseY >= window.innerHeight - 3;
 
         if (isOutsideWindowX || isOutsideWindowY) {
           let mode: DockedMode = "left";
           let newX = 0;
           let newY = currentMouseY;
 
-          if (currentMouseX >= window.innerWidth) {
+          if (currentMouseX >= window.innerWidth - 3) {
             newX = window.innerWidth - DOCKED_VERTICAL_WIDTH;
             newY = currentMouseY;
             mode = "right";
@@ -134,7 +135,7 @@ export function Draggable({
             newY = 0;
             newX = currentMouseX - DOCKED_VERTICAL_WIDTH / 2;
             mode = "top";
-          } else if (currentMouseY >= window.innerHeight) {
+          } else if (currentMouseY >= window.innerHeight - 3) {
             newY = window.innerHeight - DOCKED_HORIZONTAL_HEIGHT;
             newX = currentMouseX;
             mode = "bottom";
@@ -293,8 +294,11 @@ export function Draggable({
         widgetDockedSignal.value === "right" && "rounded-l-lg",
         `select-none`,
         "flex items-center justify-center",
-        "bg-white border shadow-sm border-gray-200",
-        "cursor-pointer hover:bg-gray-100",
+        "border shadow-sm",
+        hasUnseenFailuresSignal.value
+          ? "bg-red-500 border-red-500 hover:bg-red-600 hover:border-red-600"
+          : "bg-white border-gray-200 hover:bg-gray-100 hover:border-gray-300",
+        "cursor-pointer",
         "touch-none",
         className
       )}
