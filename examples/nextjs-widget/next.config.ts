@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   experimental: {
     urlImports: [
       "http://localhost:3002/nextjs/local/auto.global.js",
-      "https://unpkg.com/@contextcompany/otel@1.0.9/dist/nextjs/local/auto.global.js",
+      "https://unpkg.com/@contextcompany/otel/dist/nextjs/local/auto.global.js",
     ],
   },
 };
