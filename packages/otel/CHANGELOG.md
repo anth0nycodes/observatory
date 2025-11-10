@@ -1,5 +1,11 @@
 # @contextcompany/otel
 
+## 1.0.11
+
+### Patch Changes
+
+- dependency fixes + row click events
+
 ## 1.0.10
 
 ### Patch Changes

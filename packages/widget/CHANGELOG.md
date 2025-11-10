@@ -1,5 +1,11 @@
 # @contextcompany/widget
 
+## 1.0.4
+
+### Patch Changes
+
+- render failures + row click events
+
 ## 1.0.3
 
 ### Patch Changes
