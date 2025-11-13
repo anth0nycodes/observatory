@@ -66,9 +66,8 @@ Before you begin, ensure you have the following installed:
    pnpm install
    ```
 
-5. **Build all packages**:
-   ```bash
-   pnpm build
+   ```
+
    ```
 
 ### Keeping Your Fork Updated
@@ -145,7 +144,7 @@ Demonstration Next.js application showing real-world usage. Not published to npm
 1. **Create a feature branch**:
 
    ```bash
-   git checkout -b feature/your-feature-name
+   git checkout -b your-name/your-feature-name
    ```
 
 2. **Navigate to the package** you want to work on:
@@ -272,10 +271,6 @@ Follow the prompts:
 
 1. **Push your branch** to your fork:
 
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
 2. **Open a Pull Request** on GitHub from your fork to `The-Context-Company/observatory:main`
 
 3. **Fill out the PR template** with:
@@ -285,13 +280,9 @@ Follow the prompts:
    - Screenshots/videos if applicable (especially for widget changes)
    - Any breaking changes or migration steps
 
-4. **Use a descriptive PR title** following the format:
-   - `fix(otel): description` - Bug fixes
-   - `feat(widget): description` - New features
-   - `chore: description` - Maintenance tasks
-   - `docs: description` - Documentation updates
+4. **Use a descriptive PR title** following the [Commit Message Conventions](#commit-message-conventions)
 
-5. **Link related issues** using keywords like "Fixes #123" or "Closes #456"
+5. **Link related issues if applicable** using keywords like "Fixes #123" or "Closes #456"
 
 ### PR Review Process
 
@@ -299,40 +290,6 @@ Follow the prompts:
 - Address feedback by pushing additional commits to your branch
 - Once approved, a maintainer will merge your PR
 - Your changes will be included in the next release
-
-## Code Style Guidelines
-
-### TypeScript
-
-- Use **TypeScript** for all new code
-- Enable strict mode compliance
-- Prefer explicit types over `any`
-- Use meaningful variable and function names
-- Add JSDoc comments for public APIs
-
-### Code Organization
-
-- Keep functions focused and single-purpose
-- Extract reusable logic into utility functions
-- Follow the existing file structure patterns
-- Use named exports instead of default exports
-
-### Formatting
-
-The project uses consistent formatting. While there's no formatter configured yet:
-
-- Use **2 spaces** for indentation
-- Use **semicolons**
-- Use **single quotes** for strings
-- Follow the existing code style in the files you modify
-
-### Naming Conventions
-
-- **Files**: `kebab-case.ts` or `PascalCase.tsx` for components
-- **Variables/Functions**: `camelCase`
-- **Classes/Types/Interfaces**: `PascalCase`
-- **Constants**: `UPPER_SNAKE_CASE` for environment variables, `camelCase` otherwise
-- **Components**: `PascalCase`
 
 ## Commit Message Conventions
 
