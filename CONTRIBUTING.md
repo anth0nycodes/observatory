@@ -1,4 +1,4 @@
-# Contributing to Observatory
+# <img src="./.github/assets/tcc-logo.svg" width="70" align="center" /> Contributing to Observatory
 
 Thank you for your interest in contributing to Observatory! We're excited to have you here. Observatory is an AI agent observability platform that provides OpenTelemetry integration and visualization tools for monitoring Vercel AI SDK usage.
 
@@ -48,17 +48,20 @@ Before you begin, ensure you have the following installed:
 1. **Fork the repository** to your GitHub account
 
 2. **Clone your fork** locally:
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/observatory.git
    cd observatory
    ```
 
 3. **Add the upstream remote**:
+
    ```bash
    git remote add upstream https://github.com/The-Context-Company/observatory.git
    ```
 
 4. **Install dependencies**:
+
    ```bash
    pnpm install
    ```
@@ -111,23 +114,28 @@ observatory/
 ### Package Descriptions
 
 #### `@contextcompany/otel`
+
 OpenTelemetry instrumentation layer for the Vercel AI SDK. Provides span processors, exporters, and Next.js integration for collecting telemetry data in both local and cloud modes.
 
 **Key files:**
+
 - `src/TCCSpanProcessor.ts` - Filters and processes AI SDK spans
 - `src/nextjs/instrumentation.ts` - Main API (`registerOTelTCC()`)
 - `src/nextjs/local/` - Local mode WebSocket server
 - `src/exporters/` - Custom OTLP exporters
 
 #### `@contextcompany/widget`
+
 Browser-based visualization widget for real-time AI SDK observability. Built with Preact for minimal bundle size and uses Shadow DOM for style isolation.
 
 **Key files:**
+
 - `src/widget.tsx` - Main widget UI
 - `src/components/` - Reusable UI components
 - `src/state.ts` - Global state management with Preact signals
 
 #### `examples/nextjs-widget`
+
 Demonstration Next.js application showing real-world usage. Not published to npm. Use this to test your changes in a realistic environment.
 
 ## Development Workflow
@@ -135,11 +143,13 @@ Demonstration Next.js application showing real-world usage. Not published to npm
 ### Working on a Package
 
 1. **Create a feature branch**:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
 2. **Navigate to the package** you want to work on:
+
    ```bash
    cd packages/otel
    # or
@@ -147,11 +157,13 @@ Demonstration Next.js application showing real-world usage. Not published to npm
    ```
 
 3. **Start development mode** (builds on file changes):
+
    ```bash
    pnpm dev
    ```
 
 4. **For the widget**, you can serve it locally:
+
    ```bash
    pnpm dev:all  # Builds and serves on http://localhost:3001
    ```
@@ -175,12 +187,14 @@ The example app uses the local packages via workspace dependencies, so your chan
 ### Building
 
 Build individual packages:
+
 ```bash
 cd packages/otel
 pnpm build
 ```
 
 Build all packages from the root:
+
 ```bash
 pnpm build
 ```
@@ -193,6 +207,7 @@ When adding dependencies to a package:
 
 1. Navigate to the package directory
 2. Add the dependency:
+
    ```bash
    pnpm add <package-name>
    # or for dev dependencies
@@ -202,6 +217,7 @@ When adding dependencies to a package:
 3. Rebuild the package to ensure everything works
 
 For cross-package dependencies (e.g., using `@contextcompany/otel` in an example), use workspace protocol:
+
 ```json
 {
   "dependencies": {
@@ -242,6 +258,7 @@ pnpm changeset
 ```
 
 Follow the prompts:
+
 1. Select which packages are affected
 2. Choose the version bump type:
    - **patch** - Bug fixes, minor improvements
@@ -254,6 +271,7 @@ Follow the prompts:
 ### Opening a Pull Request
 
 1. **Push your branch** to your fork:
+
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -302,6 +320,7 @@ Follow the prompts:
 ### Formatting
 
 The project uses consistent formatting. While there's no formatter configured yet:
+
 - Use **2 spaces** for indentation
 - Use **semicolons**
 - Use **single quotes** for strings
@@ -328,6 +347,7 @@ While not strictly enforced, we recommend following conventional commit format:
 ```
 
 **Types:**
+
 - `feat` - New feature
 - `fix` - Bug fix
 - `docs` - Documentation changes
@@ -337,6 +357,7 @@ While not strictly enforced, we recommend following conventional commit format:
 - `chore` - Maintenance tasks
 
 **Examples:**
+
 ```
 feat(otel): add support for custom span attributes
 fix(widget): resolve drag-and-drop positioning bug
@@ -385,6 +406,7 @@ All contributors will be recognized in our release notes and commit history. Tha
 ## Questions?
 
 If you have questions about contributing, feel free to:
+
 - Open a discussion on GitHub
 - Comment on an existing issue
 - Reach out to the maintainers
