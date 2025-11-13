@@ -338,7 +338,7 @@ chore: upgrade dependencies
 
 ### Recognition
 
-All contributors will be recognized in our commit history. Thank you for making Observatory better!
+All contributors will be recognized in our commit history, contributors list, and releases. Thank you for making Observatory better!
 
 ---
 
