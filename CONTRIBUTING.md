@@ -1,6 +1,6 @@
 # <img src="./.github/assets/tcc-logo.svg" width="70" align="center" /> Contributing to Observatory
 
-Thank you for your interest in contributing to Observatory! We're excited to have you here. Observatory is an AI agent observability platform that provides OpenTelemetry integration and visualization tools for monitoring Vercel AI SDK usage.
+Thank you for your interest in contributing to Observatory! We're excited to have you here. Observatory is an AI agent observability platform.
 
 This document provides guidelines and instructions for contributing to the project. By participating, you agree to uphold our community standards and make this a welcoming environment for everyone.
 
@@ -64,10 +64,6 @@ Before you begin, ensure you have the following installed:
 
    ```bash
    pnpm install
-   ```
-
-   ```
-
    ```
 
 ### Keeping Your Fork Updated
@@ -150,27 +146,47 @@ Demonstration Next.js application showing real-world usage. Not published to npm
 2. **Navigate to the package** you want to work on:
 
    ```bash
-   cd packages/otel
-   # or
-   cd packages/widget
+   cd packages/<package-name>
    ```
 
-3. **Start development mode** (builds on file changes):
+### Understanding Development Commands
 
-   ```bash
-   pnpm dev
-   ```
+Each package supports two development modes:
 
-4. **For the widget**, you can serve it locally:
+#### `pnpm dev`
 
-   ```bash
-   pnpm dev:all  # Builds and serves on http://localhost:3001
-   ```
+- **Watch mode only** - Automatically rebuilds when you save files
+- Output goes to the `dist/` folder
+- **No local server included**
+- **When to use:** Testing changes via the example app in `examples/nextjs-widget`
+- Faster and minimal overhead
 
-5. **For otel**, serve the built files:
-   ```bash
-   pnpm dev:all  # Builds and serves on http://localhost:3002
-   ```
+#### `pnpm dev:all`
+
+- **Watch mode + local HTTP server**
+- Automatically rebuilds AND serves the built files
+- Each package may serve on a different port (check package-specific documentation)
+- **When to use:** Need to directly test built files in a browser without the example app
+- Ideal for developing browser-loadable scripts or debugging package outputs directly
+
+**Example workflow:**
+
+```bash
+# Working on a package with testing via example app
+cd packages/otel
+pnpm dev                    # Terminal 1: Watch and rebuild
+
+cd examples/nextjs-widget
+pnpm dev                    # Terminal 2: Run consumer app
+```
+
+Or:
+
+```bash
+# Working on a package with direct browser testing
+cd packages/widget
+pnpm dev:all               # Watches, rebuilds, and serves on localhost
+```
 
 ### Testing Your Changes
 
