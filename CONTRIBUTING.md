@@ -249,13 +249,6 @@ If you're adding a new feature, consider adding test cases or documenting test p
 
 ## Submitting Changes
 
-### Before Submitting
-
-1. **Ensure your code builds** without errors
-2. **Test your changes** thoroughly
-3. **Update documentation** if needed
-4. **Add a changeset** (see below)
-
 ### Opening a Pull Request
 
 1. **Push your branch** to your fork:
@@ -345,7 +338,7 @@ chore: upgrade dependencies
 
 ### Recognition
 
-All contributors will be recognized in our release notes and commit history. Thank you for making Observatory better!
+All contributors will be recognized in our commit history. Thank you for making Observatory better!
 
 ---
 
