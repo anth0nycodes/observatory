@@ -99,6 +99,68 @@ Each package supports two development modes:
 - Automatically rebuilds AND serves the built files on port 3001 or 3002
 - Lets you use URL imports for testing your local changes outside of the workspace
 
+### Testing Changes Locally
+
+Since we don't have a comprehensive test suite yet, here's how to test your changes locally using the example apps:
+
+#### Testing `@contextcompany/otel` changes
+
+1. **Build and pack the package**:
+
+   ```bash
+   cd packages/otel
+   pnpm build
+   pnpm pack
+   ```
+
+2. **Copy the file path** of the generated `.tgz` file (e.g., `contextcompany-otel-<version>.tgz`)
+   - Right-click the `.tgz` file and copy its full file path
+
+3. **Update the example's package.json**:
+
+   ```json
+   {
+     "dependencies": {
+       "@contextcompany/otel": "file:/absolute/path/to/contextcompany-otel-<version>.tgz"
+     }
+   }
+   ```
+
+4. **Test on browser**:
+   ```bash
+   cd examples/nextjs-widget
+   pnpm dev
+   ```
+
+#### Testing `@contextcompany/widget` changes
+
+1. **Start the widget dev server** with hot reloading:
+
+   ```bash
+   cd packages/widget
+   pnpm dev:all
+   ```
+
+   This serves the built widget files on `http://localhost:3001`
+
+2. **Update the example app** to use localhost:
+   In `examples/nextjs-widget/app/layout.tsx`, comment out the unpkg script and uncomment the localhost one:
+
+   ```tsx
+   {
+     /* <script src="https://unpkg.com/@contextcompany/widget/dist/auto.global.js" async /> */
+   }
+   <script src="http://localhost:3001/auto.global.js" async />;
+   ```
+
+3. **Run the example app**:
+   ```bash
+   cd examples/nextjs-widget
+   pnpm dev
+   ```
+
+Now you can make changes to the widget package and see them reflected in real-time in the example app!
+
 ## Testing
 
 We don't yet have a comprehensive test suite (contributions welcome!). Please manually test your changes:
