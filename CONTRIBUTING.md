@@ -101,75 +101,58 @@ Each package supports two development modes:
 
 ### Testing Changes Locally
 
-Since we don't have a comprehensive test suite yet, here's how to test your changes locally using the example apps:
+We don't have a comprehensive test suite yet (contributions welcome!). For now, please test your changes locally following the instructions below.
+
+#### Testing `@contextcompany/widget` changes
+
+1. **Start the widget dev server** in watch mode:
+
+   ```bash
+   cd packages/widget
+   pnpm dev
+   ```
+
+2. **Run the example app** (e.g., Next.js app):
+
+   ```bash
+   cd examples/nextjs-widget
+   pnpm dev
+   ```
+
+3. **Make changes and reload**:
+   - After making changes in the widget package, simply reload the page in your browser
+   - The changes should be reflected automatically
 
 #### Testing `@contextcompany/otel` changes
 
-1. **Build and pack the package**:
-
-   ```bash
-   cd packages/otel
-   pnpm build
-   pnpm pack
-   ```
-
-2. **Copy the file path** of the generated `.tgz` file (e.g., `contextcompany-otel-<version>.tgz`)
-   - Right-click the `.tgz` file and copy its full file path
-
-3. **Update the example's package.json**:
+1. **Ensure the example app uses the workspace version**:
+   In your example app's `package.json`, make sure you have:
 
    ```json
    {
      "dependencies": {
-       "@contextcompany/otel": "file:/absolute/path/to/contextcompany-otel-<version>.tgz"
+       "@contextcompany/otel": "workspace:*"
      }
    }
    ```
 
-4. **Test on browser**:
+2. **Start the otel dev server** in watch mode:
+
    ```bash
-   cd examples/nextjs-widget
+   cd packages/otel
    pnpm dev
-   ```
-
-#### Testing `@contextcompany/widget` changes
-
-1. **Start the widget dev server** with hot reloading:
-
-   ```bash
-   cd packages/widget
-   pnpm dev:all
-   ```
-
-   This serves the built widget files on `http://localhost:3001`
-
-2. **Update the example app** to use localhost:
-   In `examples/nextjs-widget/app/layout.tsx`, comment out the unpkg script and uncomment the localhost one:
-
-   ```tsx
-   {
-     /* <script src="https://unpkg.com/@contextcompany/widget/dist/auto.global.js" async /> */
-   }
-   <script src="http://localhost:3001/auto.global.js" async />;
    ```
 
 3. **Run the example app**:
+
    ```bash
    cd examples/nextjs-widget
    pnpm dev
    ```
 
-Now you can make changes to the widget package and see them reflected in real-time in the example app!
-
-## Testing
-
-We don't yet have a comprehensive test suite (contributions welcome!). Please manually test your changes:
-
-1. **Build the packages** you modified
-2. **Run the example app** to verify functionality
-3. **Test both local and cloud modes** if applicable
-
-If you're adding a new feature, consider adding test cases or documenting test procedures in your PR.
+4. **Make changes and restart**:
+   - After making changes in the otel package, restart the Next.js app
+   - The changes should be reflected after the restart
 
 ## Commit Message Conventions
 
