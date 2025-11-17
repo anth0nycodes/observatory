@@ -7,8 +7,6 @@ Observatory is a monorepo containing two core packages for AI agent observabilit
 - **[@contextcompany/otel](./packages/otel)** - OpenTelemetry integration for instrumenting AI SDK calls and capturing telemetry data
 - **[@contextcompany/widget](./packages/widget)** - Local-first UI overlay for visualizing AI agent traces in real-time
 
-Together, these packages enable **local mode**: a local-first observability solution.
-
 ## Local mode (AI SDK + Next.js)
 
 Local mode allows you to run The Context Company in a local-first way. This is 100% open-source and requires **no account or API key**. To set up local mode, refer to the guide below or [our documentation](https://docs.thecontext.company/frameworks/ai-sdk/local).
