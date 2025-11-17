@@ -22,31 +22,6 @@ There are many ways to contribute:
 - **Answer questions** - Help other users in issues and discussions
 - **Share feedback** - Let us know how we can improve developer experience
 
-## Getting Started
-
-### Initial Setup
-
-1. **Fork the repository** to your GitHub account
-
-2. **Clone your fork** locally:
-
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/observatory.git
-   cd observatory
-   ```
-
-3. **Add the upstream remote**:
-
-   ```bash
-   git remote add upstream https://github.com/The-Context-Company/observatory.git
-   ```
-
-4. **Install dependencies**:
-
-   ```bash
-   pnpm install
-   ```
-
 ### Opening an Issue
 
 When reporting a bug or requesting a feature, please include the following information to help us understand and address your issue quickly:
@@ -81,6 +56,31 @@ When reporting a bug or requesting a feature, please include the following infor
 3. **Proposed solution** - How you envision this working
 4. **Alternatives considered** - Other approaches you've thought about
 5. **Additional context** - Use cases, examples, or references to similar implementations
+
+## Getting Started
+
+### Initial Setup
+
+1. **Fork the repository** to your GitHub account
+
+2. **Clone your fork** locally:
+
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/observatory.git
+   cd observatory
+   ```
+
+3. **Add the upstream remote**:
+
+   ```bash
+   git remote add upstream https://github.com/The-Context-Company/observatory.git
+   ```
+
+4. **Install dependencies**:
+
+   ```bash
+   pnpm install
+   ```
 
 ## Project Structure
 
