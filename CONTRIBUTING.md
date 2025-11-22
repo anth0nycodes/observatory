@@ -8,8 +8,6 @@ Thank you for taking the time to contribute! We're excited to have you here 🙌
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
 - [Development Workflow](#development-workflow)
-- [Submitting Changes](#submitting-changes)
-- [Commit Message Conventions](#commit-message-conventions)
 
 ## How to Contribute
 
@@ -69,49 +67,87 @@ OpenTelemetry instrumentation layer for the Vercel AI SDK. Provides span process
 
 Browser-based visualization widget for real-time AI SDK observability. Built with Preact for minimal bundle size and uses Shadow DOM for style isolation.
 
-## Submitting changes
-
-### Development workflow
-
-1. Fork the repo (see [Initial Setup](#initial-setup))
-2. Create a feature branch
-
-   ```bash
-   git checkout -b your-name/your-feature-name
-   ```
-
-3. Commit and push to your changes
-4. Open a pull request
-   - please check `Allow edits from maintainers` so we can make small tweaks before merging!
+## Development workflow
 
 ### Helper package scripts
 
 Each package supports two development modes:
 
-#### `pnpm dev`
-
+`pnpm dev`:
 - **Watch mode only** - Automatically rebuilds when you save files
 - Output goes to the `dist/` folder
 
-#### `pnpm dev:all`
-
+`pnpm dev:all`:
 - **Watch mode + local HTTP server**
 - Automatically rebuilds AND serves the built files on port 3001 or 3002
 - Lets you use URL imports for testing your local changes outside of the workspace
 
-## Testing
+### Testing Changes Locally
 
-We don't yet have a comprehensive test suite (contributions welcome!). Please manually test your changes:
+We don't have a comprehensive test suite yet (contributions welcome!). For now, please test your changes locally following the instructions below.
 
-1. **Build the packages** you modified
-2. **Run the example app** to verify functionality
-3. **Test both local and cloud modes** if applicable
+#### Testing `@contextcompany/otel` changes
 
-If you're adding a new feature, consider adding test cases or documenting test procedures in your PR.
+1. **Ensure the example app uses the workspace version**:
+   In `examples/nextjs-widget/package.json`, use the workspace version for `@contextcompany/otel`:
 
-## Commit Message Conventions
+   ```json
+   {
+     "dependencies": {
+       "@contextcompany/otel": "workspace:*"
+     }
+   }
+   ```
 
-We recommend the conventional commit format:
+2. **Start the otel dev server** in watch mode:
+
+   ```bash
+   cd packages/otel
+   pnpm dev
+   ```
+
+3. **Run the example app**:
+
+   ```bash
+   cd examples/nextjs-widget
+   pnpm dev
+   ```
+
+4. **Make changes and restart**:
+   - After making changes in the otel package, restart the Next.js app so instrumentation runs again.
+
+#### Testing `@contextcompany/widget` changes
+
+1. **Start the widget dev server** with hot reloading:
+
+   ```bash
+   cd packages/widget
+   pnpm dev:all
+   ```
+
+   This serves the built widget files on `http://localhost:3001`
+
+2. **Update the example app** to use localhost:
+   In `examples/nextjs-widget/app/layout.tsx`, comment out the unpkg script and uncomment the localhost one:
+
+   ```tsx
+   {
+     /* <script src="https://unpkg.com/@contextcompany/widget/dist/auto.global.js" async /> */
+   }
+   <script src="http://localhost:3001/auto.global.js" async />;
+   ```
+
+3. **Run the example app**:
+   ```bash
+   cd examples/nextjs-widget
+   pnpm dev
+   ```
+
+Now you can make changes to the widget package and see them reflected in real-time in the example app!
+
+### Commit Message Conventions
+
+Please use the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) format for commit messages:
 
 `<type>(<scope>): <description>`
 
@@ -124,4 +160,8 @@ docs: update installation instructions
 chore: upgrade dependencies
 ```
 
-**Happy contributing!** We appreciate your time and effort in making The Context Company better for everyone.
+### Submitting Changes
+
+Open a pull request, and please check `Allow edits from maintainers` so we can make small tweaks before merging!
+
+**Happy hacking!** We appreciate your time and effort in making The Context Company better for everyone.
