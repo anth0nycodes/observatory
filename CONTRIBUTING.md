@@ -8,8 +8,6 @@ Thank you for taking the time to contribute! We're excited to have you here 🙌
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
 - [Development Workflow](#development-workflow)
-- [Submitting Changes](#submitting-changes)
-- [Commit Message Conventions](#commit-message-conventions)
 
 ## How to Contribute
 
@@ -69,44 +67,29 @@ OpenTelemetry instrumentation layer for the Vercel AI SDK. Provides span process
 
 Browser-based visualization widget for real-time AI SDK observability. Built with Preact for minimal bundle size and uses Shadow DOM for style isolation.
 
-## Submitting changes
-
-### Development workflow
-
-1. Fork the repo (see [Initial Setup](#initial-setup))
-2. Create a feature branch
-
-   ```bash
-   git checkout -b your-name/your-feature-name
-   ```
-
-3. Commit and push to your changes
-4. Open a pull request
-   - please check `Allow edits from maintainers` so we can make small tweaks before merging!
+## Development workflow
 
 ### Helper package scripts
 
 Each package supports two development modes:
 
-#### `pnpm dev`
-
+`pnpm dev`:
 - **Watch mode only** - Automatically rebuilds when you save files
 - Output goes to the `dist/` folder
 
-#### `pnpm dev:all`
-
+`pnpm dev:all`:
 - **Watch mode + local HTTP server**
 - Automatically rebuilds AND serves the built files on port 3001 or 3002
 - Lets you use URL imports for testing your local changes outside of the workspace
 
-## Testing Changes Locally
+### Testing Changes Locally
 
 We don't have a comprehensive test suite yet (contributions welcome!). For now, please test your changes locally following the instructions below.
 
 #### Testing `@contextcompany/otel` changes
 
 1. **Ensure the example app uses the workspace version**:
-   In your example app's `package.json`, make sure you have:
+   In `examples/nextjs-widget/package.json`, use the workspace version for `@contextcompany/otel`:
 
    ```json
    {
@@ -131,8 +114,7 @@ We don't have a comprehensive test suite yet (contributions welcome!). For now, 
    ```
 
 4. **Make changes and restart**:
-   - After making changes in the otel package, restart the Next.js app
-   - The changes should be reflected after the restart
+   - After making changes in the otel package, restart the Next.js app so instrumentation runs again.
 
 #### Testing `@contextcompany/widget` changes
 
@@ -163,9 +145,9 @@ We don't have a comprehensive test suite yet (contributions welcome!). For now, 
 
 Now you can make changes to the widget package and see them reflected in real-time in the example app!
 
-## Commit Message Conventions
+### Commit Message Conventions
 
-We recommend the conventional commit format:
+Please use the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) format for commit messages:
 
 `<type>(<scope>): <description>`
 
@@ -178,4 +160,8 @@ docs: update installation instructions
 chore: upgrade dependencies
 ```
 
-**Happy contributing!** We appreciate your time and effort in making The Context Company better for everyone.
+### Submitting Changes
+
+Open a pull request, and please check `Allow edits from maintainers` so we can make small tweaks before merging!
+
+**Happy hacking!** We appreciate your time and effort in making The Context Company better for everyone.
