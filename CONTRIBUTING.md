@@ -53,7 +53,10 @@ Observatory is a **pnpm monorepo** with the following structure:
 observatory/
 ├── packages/
 │   ├── otel/     # @contextcompany/otel - OpenTelemetry integration
-│   └── widget/   # @contextcompany/widget - Preact widget for Local Mode
+│   ├── widget/   # @contextcompany/widget - Preact widget for Local Mode
+│   └── claude/   # @contextcompany/claude - Claude Agent SDK instrumentation
+│       ├── ts/       # TypeScript implementation
+│       └── python/   # Python implementation (coming soon)
 └── examples/     # Examples of Local Mode
 ```
 
@@ -66,6 +69,10 @@ OpenTelemetry instrumentation layer for the Vercel AI SDK. Provides span process
 #### `@contextcompany/widget`
 
 Browser-based visualization widget for real-time AI SDK observability. Built with Preact for minimal bundle size and uses Shadow DOM for style isolation.
+
+#### `@contextcompany/claude`
+
+Instrumentation wrapper for the Claude Agent SDK. Provides transparent telemetry collection and feedback submission for Claude-powered agents. Currently supports TypeScript, with Python support coming soon.
 
 ## Development workflow
 
@@ -144,6 +151,35 @@ We don't have a comprehensive test suite yet (contributions welcome!). For now, 
    ```
 
 Now you can make changes to the widget package and see them reflected in real-time in the example app!
+
+#### Testing `@contextcompany/claude` changes
+
+1. **Navigate to the TypeScript package**:
+
+   ```bash
+   cd packages/claude/ts
+   ```
+
+2. **Build in watch mode**:
+
+   ```bash
+   pnpm dev
+   ```
+
+3. **Test in your own project**:
+   Since this package wraps the Claude Agent SDK, you'll need to test it in a project that uses `@anthropic-ai/claude-agent-sdk`. You can use the workspace version:
+
+   ```json
+   {
+     "dependencies": {
+       "@contextcompany/claude": "workspace:*"
+     }
+   }
+   ```
+
+4. **Make changes and rebuild**:
+   - Changes to the package require a rebuild
+   - The `pnpm dev` watch mode will automatically rebuild on file changes
 
 ### Commit Message Conventions
 

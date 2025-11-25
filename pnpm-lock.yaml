@@ -190,8 +190,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.50(zod@3.25.76)
       '@contextcompany/claude':
-        specifier: ^0.1.1
-        version: 0.1.1(@anthropic-ai/claude-agent-sdk@0.1.50(zod@3.25.76))
+        specifier: ^0.1.2
+        version: 0.1.2(@anthropic-ai/claude-agent-sdk@0.1.50(zod@3.25.76))
       dotenv:
         specifier: ^17.2.2
         version: 17.2.3
@@ -379,8 +379,8 @@ packages:
   '@changesets/write@0.4.0':
     resolution: {integrity: sha512-CdTLvIOPiCNuH71pyDu3rA+Q0n65cmAbXnwWH84rKGiFumFzkmHNT8KHTMEchcxN+Kl8I54xGUhJ7l3E7X396Q==}
 
-  '@contextcompany/claude@0.1.1':
-    resolution: {integrity: sha512-W98h8To3Cs/p9IdIu4ZVbdDEO+i1EuxFCkB2d0xd8vTd39RHeuHSU0a4xYQjsU3ah8i6EDfhZi7hsfRZIn1ehw==}
+  '@contextcompany/claude@0.1.2':
+    resolution: {integrity: sha512-aAuJ1Bi2UY0ANSaHIL8//jeyVjG+HPexvWLLB5G+nySeas9AV8KhBVRdUH5i+3dazc4XCgQwqvFiwCcV6Yht+g==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@anthropic-ai/claude-agent-sdk': '>=0.1.0'
@@ -3697,7 +3697,7 @@ snapshots:
       human-id: 4.1.2
       prettier: 2.8.8
 
-  '@contextcompany/claude@0.1.1(@anthropic-ai/claude-agent-sdk@0.1.50(zod@3.25.76))':
+  '@contextcompany/claude@0.1.2(@anthropic-ai/claude-agent-sdk@0.1.50(zod@3.25.76))':
     dependencies:
       '@anthropic-ai/claude-agent-sdk': 0.1.50(zod@3.25.76)
 

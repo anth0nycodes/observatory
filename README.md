@@ -2,10 +2,11 @@
 
 [The Context Company](https://thecontext.company/) does agent observability. **We care deeply about DX; it’s our single biggest priority.**
 
-Observatory is a monorepo containing two core packages for AI agent observability:
+Observatory is a monorepo containing core packages for AI agent observability:
 
 - **[@contextcompany/otel](./packages/otel)** - OpenTelemetry integration for instrumenting AI SDK calls
 - **[@contextcompany/widget](./packages/widget)** - Local-first UI overlay for visualizing AI agent traces in real-time
+- **[@contextcompany/claude](./packages/claude)** - Instrumentation for Claude Agent SDK
 
 ## Local mode (AI SDK + Next.js)
 
