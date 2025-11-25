@@ -12,6 +12,31 @@ importers:
         specifier: ^2.29.7
         version: 2.29.7(@types/node@20.19.24)
 
+  examples/claude-agent-sdk:
+    dependencies:
+      '@anthropic-ai/claude-agent-sdk':
+        specifier: ^0.1.0
+        version: 0.1.50(zod@3.25.76)
+      '@contextcompany/claude':
+        specifier: workspace:*
+        version: link:../../packages/claude/ts
+      dotenv:
+        specifier: ^17.2.2
+        version: 17.2.3
+      zod:
+        specifier: ^3.23.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.24
+      tsx:
+        specifier: ^4.19.0
+        version: 4.20.6
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+
   examples/nextjs-widget:
     dependencies:
       '@ai-sdk/openai':
