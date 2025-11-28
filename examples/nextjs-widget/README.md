@@ -48,7 +48,12 @@ yarn install
 ```
 
 3. **Configure environment variables:**
-   Create a `.env.local` file:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and add your OpenAI API key:
 
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
