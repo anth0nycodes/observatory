@@ -68,7 +68,7 @@ ${pc.dim("Options:")}
   // Phase 3: detection, package-install
   // Phase 4: instrumentation
   // Phase 5: mcp-setup
-  // Phase 6: slack-setup
+  // Phase 6: slack-setup ✓
   // Phase 7: success-summary
   const steps: Step[] = await getSteps();
 
