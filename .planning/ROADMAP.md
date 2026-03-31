@@ -46,7 +46,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. If auth times out after 30 seconds, user sees a manual key fallback option
 **Plans:** 1 plan
 Plans:
-- [ ] 06-01-PLAN.md -- Slack OAuth step + server endpoints: setup-slack pipeline step with localhost callback, server-side token exchange, pipeline wiring
+- [x] 06-01-PLAN.md -- Slack OAuth step + server endpoints: setup-slack pipeline step with localhost callback, server-side token exchange, pipeline wiring
 
 ### Phase 3: Detection + Package Installation
 **Goal**: The wizard correctly identifies any supported framework and installs the right SDK packages using the project's package manager
