@@ -1,5 +1,17 @@
 # @contextcompany/otel
 
+## 1.0.15
+
+### Patch Changes
+
+- Published out-of-band (no changeset recorded). Broken: bundle references the old 3-arg `getTCCUrl(apiKey, prodUrl, devUrl)` signature but resolves `@contextcompany/api@^1.0.1` at runtime, which ships the new 2-arg `getTCCUrl(path, apiKey)` signature. Endpoint URLs fail to resolve. Use 1.0.16+.
+
+## 1.0.14
+
+### Patch Changes
+
+- Published out-of-band (no changeset recorded). Same endpoint-resolution bug as 1.0.15. Use 1.0.16+.
+
 ## 1.0.13
 
 ### Patch Changes
