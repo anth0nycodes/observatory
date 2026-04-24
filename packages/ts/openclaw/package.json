@@ -11,7 +11,7 @@
   ],
   "openclaw": {
     "extensions": [
-      "src/index.ts"
+      "dist/index.cjs"
     ],
     "plugin": "openclaw.plugin.json"
   },
