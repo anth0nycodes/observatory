@@ -29,7 +29,11 @@ export const provisionKeysStep: Step = {
   async shouldRun(ctx: WizardContext): Promise<boolean> {
     if (ctx.completedSteps.includes("provision-keys")) return false;
     if (ctx.apiKey) return false;
-    return !!ctx.accessToken;
+    // The /cli/keys endpoint requires both a token and an org. Auth
+    // can succeed but leave organizationId undefined (user not in any
+    // org); skip cleanly in that case so the success summary points
+    // them at the dashboard instead of bombing the wizard.
+    return !!ctx.accessToken && !!ctx.organizationId;
   },
 
   async run(ctx: WizardContext): Promise<StepResult> {
