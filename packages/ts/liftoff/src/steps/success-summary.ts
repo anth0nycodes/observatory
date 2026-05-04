@@ -4,18 +4,6 @@ import { FRAMEWORKS, type Step, type StepResult, type WizardContext } from "../t
 import { getDashboardUrl } from "../utils/config.js";
 import { getRunDevCommand } from "../utils/package-manager.js";
 
-/**
- * Pipeline step: display a success summary and next steps.
- *
- * Prints a receipt-style summary of everything the wizard did:
- * - Framework detected
- * - Files created/modified
- * - Metadata hooks wired
- * - MCP editors configured
- * - Slack connection status
- * - Exact command to run the app
- * - Deep-link to the dashboard
- */
 export const successSummaryStep: Step = {
   name: "success-summary",
 
@@ -26,7 +14,6 @@ export const successSummaryStep: Step = {
   async run(ctx: WizardContext): Promise<StepResult> {
     const lines: string[] = [];
 
-    // Framework (SUM-01)
     const frameworkInfo = FRAMEWORKS.find(
       (f) => f.id === ctx.framework,
     );
@@ -35,20 +22,12 @@ export const successSummaryStep: Step = {
       `${pc.dim("Framework")}    ${frameworkName}`,
     );
 
-    // API key state — three buckets:
-    // - apiKey present: provisioned by the keys step
-    // - accessToken but no apiKey: signed in but provisioning failed/declined
-    // - neither: user skipped sign-in, has to grab a key from the dashboard
     if (ctx.apiKey) {
       lines.push(`${pc.dim("API key")}      ${pc.green("Provisioned")}`);
     } else {
       lines.push(`${pc.dim("API key")}      ${pc.yellow("Generate at dashboard")}`);
     }
 
-    // Instrumentation handoff status — liftoff hands a prompt to the
-    // user's coding agent rather than writing files itself. Branch on
-    // whether the instrument step actually copied the prompt (it can
-    // be skipped: fetch fail, user decline, clipboard unavailable).
     lines.push(
       `${pc.dim("Instrument")}   ${
         ctx.promptCopied
@@ -57,7 +36,6 @@ export const successSummaryStep: Step = {
       }`,
     );
 
-    // MCP editors (SUM-04)
     if (
       ctx.editorsConfigured &&
       ctx.editorsConfigured.length > 0
@@ -71,7 +49,6 @@ export const successSummaryStep: Step = {
       );
     }
 
-    // Slack status (SUM-05)
     if (ctx.slackConnected) {
       lines.push(
         `${pc.dim("Slack")}        ${pc.green("Connected")}`,
@@ -82,21 +59,15 @@ export const successSummaryStep: Step = {
       );
     }
 
-    // Print the summary box
     p.note(lines.join("\n"), "Setup Complete");
 
-    // Next steps. If the prompt was copied, the user has already
-    // pasted it (we gated on that in the instrument step) — so we
-    // don't re-tell them to paste. We just tell them what happens
-    // next: agent instruments, they run the app, check the dashboard,
-    // and fall back to the TCC_API_KEY hint if runs don't appear.
+    // If the prompt was copied, the user has already pasted it (the
+    // instrument step gates on that), so don't re-tell them to paste.
     const pm = ctx.packageManager ?? "npm";
     const runCmd = getRunDevCommand(pm);
     const dashUrl = `${getDashboardUrl()}/prod/runs`;
     const settingsUrl = `${getDashboardUrl()}/prod/settings`;
 
-    // Build the "what to do next" text. The opening line varies by
-    // whether we provisioned a key for them or not.
     const apiKeyPreamble = ctx.apiKey
       ? ""
       : `${pc.bold("First, grab your API key.")} You skipped sign-in, so we couldn't provision one for you. Generate one in the dashboard and add it to your environment as ${pc.bold("TCC_API_KEY")}:\n  ${pc.underline(settingsUrl)}\n\n`;
@@ -123,7 +94,6 @@ export const successSummaryStep: Step = {
       );
     }
 
-    // Pipeline pushes step.name on "completed" — don't push again.
     return { status: "completed" };
   },
 };

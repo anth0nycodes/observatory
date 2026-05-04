@@ -4,9 +4,6 @@ import os from "node:os";
 import path from "node:path";
 import { getMcpServerUrl } from "./config.js";
 
-/**
- * Supported MCP-capable editor identifiers.
- */
 export type EditorId =
   | "cursor"
   | "claude-code"
@@ -15,21 +12,12 @@ export type EditorId =
   | "opencode";
 
 interface EditorConfig {
-  /** Display name shown in the wizard */
   name: string;
-  /** How the editor is configured: file-based JSON or CLI command */
   configType: "file" | "cli";
-  /** Returns the path to the MCP config file (file-based editors only) */
   configPath?: (projectDir: string) => string;
-  /** Returns paths to check for editor detection */
   detectPaths: (projectDir: string) => string[];
 }
 
-/**
- * Configuration map for all supported MCP-capable editors.
- *
- * Each entry defines how to detect the editor and where to write MCP config.
- */
 export const EDITOR_CONFIGS: Record<EditorId, EditorConfig> = {
   cursor: {
     name: "Cursor",
@@ -80,15 +68,6 @@ export const EDITOR_CONFIGS: Record<EditorId, EditorConfig> = {
   },
 };
 
-/**
- * Detect which MCP-capable editors are installed/present for the given project.
- *
- * Checks filesystem paths and CLI availability to determine which editors
- * the user has installed. Returns an array of detected editor IDs.
- *
- * @param projectDir - Root directory of the user's project
- * @returns Array of detected EditorId values
- */
 export function detectEditors(projectDir: string): EditorId[] {
   const detected: EditorId[] = [];
 
@@ -96,8 +75,7 @@ export function detectEditors(projectDir: string): EditorId[] {
     const editorId = id as EditorId;
 
     if (editorId === "claude-code") {
-      // Claude Code is detected by checking if the `claude` binary is
-      // on PATH. `which` is Unix-only; Windows uses `where`.
+      // `which` is Unix-only, Windows uses `where`.
       const lookup = process.platform === "win32" ? "where" : "which";
       try {
         execFileSync(lookup, ["claude"], {
@@ -105,7 +83,7 @@ export function detectEditors(projectDir: string): EditorId[] {
         });
         detected.push(editorId);
       } catch {
-        // Not installed
+        // Not installed.
       }
       continue;
     }
@@ -119,13 +97,7 @@ export function detectEditors(projectDir: string): EditorId[] {
   return detected;
 }
 
-/**
- * Build the MCP server entry object for The Context Company.
- *
- * The MCP server uses OAuth — clients negotiate auth on first connect
- * via the standard MCP discovery flow, so we don't bake any API key
- * into the editor config. Just the transport + URL.
- */
+// MCP uses OAuth, so we don't bake any API key into the editor config.
 export function buildMcpServerEntry(): {
   type: string;
   url: string;
@@ -136,16 +108,8 @@ export function buildMcpServerEntry(): {
   };
 }
 
-/**
- * Write or merge MCP config for a file-based editor.
- *
- * Reads the existing config file (if any), ensures `mcpServers` key exists,
- * and sets the `context-company` server entry. All other existing servers
- * are preserved.
- *
- * @param editorId - The editor to configure
- * @param projectDir - Root directory of the user's project
- */
+// Reads the existing config (if any) and merges in the context-company
+// entry, preserving any other configured servers.
 export function writeMcpConfig(
   editorId: EditorId,
   projectDir: string,
@@ -160,17 +124,14 @@ export function writeMcpConfig(
   const configPath = config.configPath(projectDir);
   const dir = path.dirname(configPath);
 
-  // Ensure parent directories exist
   fs.mkdirSync(dir, { recursive: true });
 
-  // Read existing config or start fresh
   let parsed: Record<string, unknown> = {};
   if (fs.existsSync(configPath)) {
     try {
       const content = fs.readFileSync(configPath, "utf-8");
       parsed = JSON.parse(content) as Record<string, unknown>;
     } catch {
-      // If file is corrupt, start fresh
       console.error(
         `[TCC] Could not parse ${configPath}, creating new config`,
       );
@@ -178,7 +139,6 @@ export function writeMcpConfig(
     }
   }
 
-  // Ensure mcpServers key exists
   if (
     !parsed.mcpServers ||
     typeof parsed.mcpServers !== "object"
@@ -186,12 +146,10 @@ export function writeMcpConfig(
     parsed.mcpServers = {};
   }
 
-  // Add/update only the context-company entry, preserving others
   (parsed.mcpServers as Record<string, unknown>)[
     "context-company"
   ] = buildMcpServerEntry();
 
-  // Write back
   fs.writeFileSync(
     configPath,
     JSON.stringify(parsed, null, 2) + "\n",
@@ -199,21 +157,13 @@ export function writeMcpConfig(
   );
 }
 
-/**
- * Run `claude mcp add` to configure Claude Code for MCP.
- *
- * Claude Code handles the OAuth handshake itself when the user first
- * invokes a tool from the server — no Authorization header needed in
- * the registration command.
- */
 export function runClaudeMcpAdd(): {
   success: boolean;
   error?: string;
 } {
   try {
-    // Use execFileSync + arg array so shell metacharacters in the
-    // MCP URL (from the user-controlled --api-base flag) can't break
-    // out of the command.
+    // execFileSync + arg array so shell metacharacters in the MCP URL
+    // (from the user-controlled --api-base flag) can't break out.
     execFileSync(
       "claude",
       [

@@ -2,11 +2,8 @@ import * as p from "@clack/prompts";
 import pc from "picocolors";
 import type { Step, WizardContext } from "./types.js";
 
-/**
- * Track the step currently inside .run() so a signal handler can
- * cleanup it in addition to any already-completed steps. Nothing
- * else should touch this — it's pipeline internals.
- */
+// Tracks the step currently inside .run() so signal handlers can clean
+// up its live resources in addition to already-completed steps.
 let runningStep: Step | null = null;
 
 function setupSignalHandlers(ctx: WizardContext, steps: Step[]): void {
@@ -16,10 +13,8 @@ function setupSignalHandlers(ctx: WizardContext, steps: Step[]): void {
     handled = true;
     p.cancel("Setup cancelled.");
 
-    // Cleanup the running step first (it owns live resources like
-    // the localhost OAuth server), then walk completedSteps in
-    // reverse order. Skip the running step if it happens to also be
-    // in completedSteps (shouldn't, but belt-and-suspenders).
+    // Clean up the running step first (it may own live resources like
+    // the localhost OAuth server), then walk completedSteps in reverse.
     const seen = new Set<string>();
     const queue: Step[] = [];
     if (runningStep) {
@@ -40,12 +35,10 @@ function setupSignalHandlers(ctx: WizardContext, steps: Step[]): void {
       try {
         await step.cleanup(ctx);
       } catch {
-        // Best-effort — don't let one cleanup failure block the rest.
+        // Best-effort: don't let one cleanup failure block the rest.
       }
     }
     // Unix convention for SIGINT termination is 128 + signal number.
-    // Exiting 0 would let CI treat a Ctrl+C cancel as success; that's
-    // also inconsistent with the pipeline-failure path which exits 1.
     process.exit(130);
   };
 
@@ -53,11 +46,6 @@ function setupSignalHandlers(ctx: WizardContext, steps: Step[]): void {
   process.on("SIGTERM", handler);
 }
 
-/**
- * Run a sequence of pipeline steps with shared context.
- * Steps are executed in order. Each step's shouldRun() is checked
- * first for idempotency -- if false, the step is skipped.
- */
 export async function runPipeline(
   steps: Step[],
   ctx: WizardContext,
@@ -67,12 +55,9 @@ export async function runPipeline(
   for (const step of steps) {
     const shouldRun = await step.shouldRun(ctx);
     if (!shouldRun) {
-      // Only surface the "already done" log for genuine re-entrancy
-      // (the step ran successfully in a prior pass). Steps that opt
-      // out for other reasons — e.g. auth was skipped so a downstream
-      // step has nothing to do — should stay silent or surface their
-      // own explanation from inside run(). The old hardcoded "already
-      // done" message was misleading in those cases.
+      // Only log "already done" for genuine re-entrancy. Steps that
+      // opt out for other reasons should stay silent or explain
+      // themselves from inside run().
       if (ctx.completedSteps.includes(step.name)) {
         p.log.info(pc.dim(`Skipping ${step.name} (already done)`));
       }

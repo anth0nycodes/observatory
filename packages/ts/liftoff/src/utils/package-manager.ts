@@ -161,9 +161,6 @@ export function isPackageInstalled(
   return false;
 }
 
-/**
- * Get the dev run command for a given package manager.
- */
 export function getRunDevCommand(pm: PackageManager): string {
   switch (pm) {
     case "bun":

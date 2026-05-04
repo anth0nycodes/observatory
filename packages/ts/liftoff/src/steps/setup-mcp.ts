@@ -9,15 +9,9 @@ import {
   writeMcpConfig,
 } from "../utils/mcp-config.js";
 
-/**
- * Pipeline step: configure MCP for the user's AI coding editors.
- *
- * The MCP server uses OAuth — editors negotiate auth on first connect
- * via the standard MCP discovery flow, so this step doesn't need an
- * access token or readonly key. It runs even if the user skipped
- * sign-in, since wiring the server URL into editor config is purely
- * client-side.
- */
+// MCP uses OAuth, so this step doesn't need an access token and runs
+// even when the user skipped sign-in: wiring the server URL into editor
+// config is purely client-side.
 export const setupMcpStep: Step = {
   name: "setup-mcp",
 
@@ -26,9 +20,7 @@ export const setupMcpStep: Step = {
   },
 
   async run(ctx: WizardContext): Promise<StepResult> {
-    // Extra gap above the section heading creates breathing room and
-    // signals "new chapter". Inside the section we rely on clack's
-    // default spacing between log calls and confirms.
+    // Extra gap above the heading signals "new chapter".
     p.log.message("");
     p.log.step(pc.bold("MCP server"));
     p.log.info(
@@ -99,7 +91,6 @@ export const setupMcpStep: Step = {
         ),
       );
     }
-    // Pipeline pushes step.name on "completed" — don't push again.
     return { status: "completed" };
   },
 };

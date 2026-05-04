@@ -12,10 +12,7 @@ import {
 } from "../utils/env.js";
 import { readPackageJson } from "../utils/file-utils.js";
 
-/**
- * Lightweight Next.js detection via package.json dependencies.
- * Used to determine whether to write .env.local (Next.js) or .env (other).
- */
+// Determines whether to write .env.local (Next.js) or .env (other).
 function isNextJsProject(installDir: string): boolean {
   const pkg = readPackageJson(installDir);
   if (!pkg) return false;
@@ -31,10 +28,7 @@ export const provisionKeysStep: Step = {
 
   async shouldRun(ctx: WizardContext): Promise<boolean> {
     if (ctx.completedSteps.includes("provision-keys")) return false;
-    // Already have a prod key — no need to mint another (guards
-    // against re-entering the pipeline with a populated context).
     if (ctx.apiKey) return false;
-    // Needs a valid access token from the auth step.
     return !!ctx.accessToken;
   },
 
@@ -44,8 +38,6 @@ export const provisionKeysStep: Step = {
     try {
       spinner.start("Provisioning API key...");
 
-      // Ask for a prod key only. MCP no longer needs a readonly key
-      // (OAuth handles editor auth at first connect).
       const response = await fetch(`${getApiBase()}/cli/keys`, {
         method: "POST",
         headers: {
@@ -77,9 +69,9 @@ export const provisionKeysStep: Step = {
       ctx.apiKey = data.prodKey.key;
       spinner.stop("API key provisioned");
 
-      // Write to .env[.local] if we can figure out the convention;
-      // regardless, print the key to the terminal so the user can
-      // grab it if they use a different secret-management setup.
+      // Write to .env[.local] when we can detect the convention, and
+      // always print the key so users with their own secrets setup can
+      // copy it.
       const isNextJs = isNextJsProject(ctx.installDir);
       const envFilename = getEnvFilename(isNextJs);
       const hasManifest =
@@ -101,8 +93,6 @@ export const provisionKeysStep: Step = {
         }
       }
 
-      // Always show the key so the user can see what was provisioned
-      // and copy it into a different env-handling flow if they want.
       p.note(
         `${pc.bold("TCC_API_KEY")}   ${data.prodKey.key}\n\n` +
           (writeStatus === "written"

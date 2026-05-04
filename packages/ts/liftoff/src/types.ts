@@ -112,49 +112,30 @@ export const FRAMEWORKS: FrameworkInfo[] = [
   },
 ];
 
-/** Result of a pipeline step execution */
 export interface StepResult {
   status: "completed" | "skipped" | "failed";
   message?: string;
 }
 
-/** A single step in the liftoff pipeline */
 export interface Step {
-  /** Human-readable step name for logging */
   name: string;
-  /** Check if this step should execute (return false to skip for idempotency) */
   shouldRun(ctx: WizardContext): Promise<boolean>;
-  /** Execute the step, mutating context as needed */
   run(ctx: WizardContext): Promise<StepResult>;
-  /** Cleanup on Ctrl+C or error (optional) */
   cleanup?(ctx: WizardContext): Promise<void>;
 }
 
 export interface WizardContext {
-  /** Root directory of the user's project */
   installDir: string;
-  /** User-selected framework */
   framework?: Framework;
-  /** Detected or user-selected package manager */
   packageManager?: PackageManager;
-  /** Detected project language */
   language?: ProjectLanguage;
-  /** TCC prod API key (provisioned by the keys step, written to .env[.local]) */
   apiKey?: string;
-  /** Auth token from WorkOS OAuth (set by auth step) */
   accessToken?: string;
-  /** Refresh token from WorkOS OAuth */
   refreshToken?: string;
-  /** Authenticated user info */
   user?: { id: string; email: string; firstName?: string };
-  /** Organization ID for key provisioning */
   organizationId?: string;
-  /** Steps that have completed in this run (for idempotency tracking) */
   completedSteps: string[];
-  /** Whether Slack workspace was connected (set by setup-slack step) */
   slackConnected?: boolean;
-  /** Display names of MCP editors configured */
   editorsConfigured?: string[];
-  /** Whether the instrument step successfully copied the prompt to clipboard */
   promptCopied?: boolean;
 }

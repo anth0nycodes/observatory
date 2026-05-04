@@ -17,13 +17,8 @@ const SLACK_SCOPES = [
   "im:read",
 ].join(",");
 
-/** Module-level close function so cleanup can reach it */
 let closeServer: (() => void) | null = null;
 
-/**
- * Fetch the Slack client ID from the context repo API.
- * Returns null on failure (caller should skip gracefully).
- */
 async function fetchSlackClientId(
   accessToken: string,
 ): Promise<string | null> {
@@ -39,9 +34,8 @@ async function fetchSlackClientId(
   }
 }
 
-/**
- * Exchange the OAuth code on the server side (CLI cannot hold client secret).
- */
+// The exchange runs server-side because the CLI cannot hold the client
+// secret.
 async function exchangeSlackCode(
   accessToken: string,
   code: string,
@@ -73,13 +67,6 @@ async function exchangeSlackCode(
   }
 }
 
-/**
- * Pipeline step: connect the user's Slack workspace for alerts.
- *
- * Prompts for confirmation, opens browser to Slack OAuth, receives the
- * callback on a localhost server, exchanges the code via the context repo
- * API, and shows post-connect guidance.
- */
 export const setupSlackStep: Step = {
   name: "setup-slack",
 
@@ -88,20 +75,15 @@ export const setupSlackStep: Step = {
   },
 
   async run(ctx: WizardContext): Promise<StepResult> {
-    // Extra gap above the section heading creates breathing room and
-    // signals "new chapter". Inside the section we rely on clack's
-    // default spacing between log calls and confirms.
+    // Extra gap above the heading signals "new chapter".
     p.log.message("");
     p.log.step(pc.bold("Slack bot"));
     p.log.info(
       "Delivers reports and alerts to your workspace about regressions and patterns you'd miss.",
     );
 
-    // Slack OAuth exchange runs server-side and binds the workspace
-    // to the TCC org — that needs a signed-in user. If the wizard
-    // skipped sign-in, we can't run the flow here. Don't ask the
-    // question we can't fulfill; just point the user at the dashboard
-    // setting where they can hook Slack up later.
+    // The OAuth exchange binds the workspace to the TCC org and needs
+    // a signed-in user, so don't ask the question we can't fulfill.
     if (!ctx.accessToken) {
       p.log.info(
         `Sign in to set this up. You can also wire it up later from the dashboard:\n  ${pc.underline(`${getDashboardUrl()}/prod/settings`)}`,
@@ -123,7 +105,6 @@ export const setupSlackStep: Step = {
 
     p.log.info(pc.dim("We'll open your browser to connect a Slack workspace."));
 
-    // Fetch Slack client ID from server
     const clientId = await fetchSlackClientId(ctx.accessToken!);
     if (!clientId) {
       p.log.warn(
@@ -135,10 +116,9 @@ export const setupSlackStep: Step = {
       };
     }
 
-    // Start OAuth flow (SLK-02)
     const state = crypto.randomBytes(16).toString("hex");
     const { port, waitForCallback, close } =
-      await startCallbackServer(state, 300_000); // 5 min — covers first-time Slack install + workspace pick
+      await startCallbackServer(state, 300_000); // 5 min, covers first-time Slack install + workspace pick
     closeServer = close;
 
     const redirectUri = `http://127.0.0.1:${port}/callback`;
@@ -149,11 +129,9 @@ export const setupSlackStep: Step = {
       `&redirect_uri=${encodeURIComponent(redirectUri)}` +
       `&state=${state}`;
 
-    // Open browser
     const openModule = await import("open");
     await openModule.default(slackOAuthUrl);
 
-    // Wait for callback
     const s = p.spinner();
     s.start("Waiting for Slack authorization...");
     const result = await waitForCallback();
@@ -171,7 +149,6 @@ export const setupSlackStep: Step = {
       };
     }
 
-    // Exchange code via server endpoint
     const exchange = await exchangeSlackCode(
       ctx.accessToken!,
       result.code,
@@ -190,20 +167,17 @@ export const setupSlackStep: Step = {
       };
     }
 
-    // Success
     p.log.success(
       `Connected to Slack workspace: ${exchange.teamName}`,
     );
     ctx.slackConnected = true;
 
-    // Post-connect guidance (SLK-03)
     p.log.info(
       pc.cyan("Next steps for Slack alerts:\n") +
         "1. Add the Context Company bot to a channel\n" +
         "2. Type /subscribe in that channel to start receiving alerts",
     );
 
-    // Pipeline pushes step.name on "completed" — don't push again.
     return { status: "completed" };
   },
 

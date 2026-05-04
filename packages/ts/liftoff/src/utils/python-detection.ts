@@ -1,17 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 
-/**
- * Normalize a Python package name for comparison.
- * Lowercases, replaces underscores with hyphens, strips
- * version specifiers.
- */
 function normalizePyPkg(raw: string): string {
-  // Strip version specifiers first, then drop any extras bracket
-  // ("langchain[all]>=0.2" → "langchain"). Without the bracket strip,
-  // dependencies like crewai[tools], langchain[openai], or
-  // langchain[all] never matched hasPythonDep(…, "langchain"),
-  // silently breaking framework auto-detection.
+  // Strip version specifiers, then drop any extras bracket
+  // ("langchain[all]>=0.2" -> "langchain"). Without the bracket strip,
+  // crewai[tools] / langchain[openai] never match hasPythonDep().
   return raw
     .trim()
     .toLowerCase()
@@ -21,16 +14,8 @@ function normalizePyPkg(raw: string): string {
     .trim();
 }
 
-/**
- * Parse dependencies from a pyproject.toml file.
- *
- * Reads the `[project]` section's `dependencies` array and
- * `[project.optional-dependencies]` sections using regex
- * (no TOML library required).
- *
- * @returns Normalized lowercase package names, or empty array
- *   if file not found or parse fails.
- */
+// Reads `[project]` dependencies and `[project.optional-dependencies]`
+// using regex (no TOML library).
 export function parsePyprojectDeps(installDir: string): string[] {
   const filePath = path.join(installDir, "pyproject.toml");
 
@@ -47,11 +32,9 @@ export function parsePyprojectDeps(installDir: string): string[] {
 
   const deps: string[] = [];
 
-  // Match the [project] section body only (stop at next [section]),
-  // then find `dependencies = [...]` strictly inside it. Without the
-  // section-body isolation, a [project] without dependencies followed
-  // by e.g. [tool.poetry.dev-dependencies] would match the latter's
-  // dependencies by mistake.
+  // Isolate the [project] section body before matching `dependencies`.
+  // Without isolation, a [project] without dependencies followed by
+  // e.g. [tool.poetry.dev-dependencies] would match the latter's deps.
   const projSection = content.match(
     /\[project\]\s*\n([\s\S]*?)(?=\n\[|$)/,
   );
@@ -73,10 +56,8 @@ export function parsePyprojectDeps(installDir: string): string[] {
     }
   }
 
-  // Note: `[project.optional-dependencies.<name>]` is not valid
-  // PEP 621 — optional deps live under a single
-  // `[project.optional-dependencies]` section as key-value pairs.
-  // Only the inline-format parser below is needed.
+  // PEP 621 puts optional deps under a single
+  // `[project.optional-dependencies]` table as key-value pairs.
   const inlineOptMatch = content.match(
     /\[project\.optional-dependencies\]\s*\n([\s\S]*?)(?=\n\[|$)/,
   );
@@ -101,15 +82,6 @@ export function parsePyprojectDeps(installDir: string): string[] {
   return deps;
 }
 
-/**
- * Parse dependencies from a requirements.txt file.
- *
- * Splits by newline, filters out comments and flags,
- * strips version specifiers, normalizes to lowercase.
- *
- * @returns Normalized lowercase package names, or empty array
- *   if file not found.
- */
 export function parseRequirementsTxt(
   installDir: string,
 ): string[] {
@@ -132,7 +104,6 @@ export function parseRequirementsTxt(
   for (const line of lines) {
     const trimmed = line.trim();
 
-    // Skip empty lines, comments, and flags
     if (
       !trimmed ||
       trimmed.startsWith("#") ||

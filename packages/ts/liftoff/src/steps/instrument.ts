@@ -9,41 +9,19 @@ import {
 } from "../types.js";
 import { getApiBase } from "../utils/config.js";
 
-/** Timeout for the prompt fetch (ms). */
 const FETCH_TIMEOUT_MS = 10_000;
 
-/**
- * Response shape for GET /cli/prompts?framework=<id>[&lang=<lang>].
- *
- * Lives in context/public-api and is sourced from the onboarding
- * prompts module in context/demo. Liftoff never builds the prompt
- * itself — it only fetches and displays what the API returns.
- */
 interface PromptResponse {
-  /** Full prompt text for the user's coding agent. */
   prompt: string;
-  /** Docs deep-link for this framework (shown as fallback hint). */
   docsUrl?: string;
-  /** Human-readable framework name (used in messaging). */
   frameworkName?: string;
 }
 
-/**
- * Pipeline step: hand off instrumentation to the user's coding agent.
- *
- * Liftoff does not edit the user's application code. Instead, it
- * fetches a framework-specific prompt from the Context Company API
- * (`/cli/prompts`), displays it, and copies it to the clipboard so
- * the user can paste it into Claude Code, Cursor, Windsurf, or any
- * other AI coding agent that has full repo context. The agent makes
- * the edits — liftoff just orchestrates the handoff.
- *
- * Rationale: large real-world codebases exceed anything liftoff can
- * reasonably snapshot + send to a backend model, and template-based
- * fallbacks produce hallucinated API calls against a moving SDK. The
- * user's agent has the full repo, the user's own conventions, and
- * live access to the docs site.
- */
+// Fetches a framework-specific prompt from the API and hands it off via
+// the clipboard so the user's coding agent (which already has full repo
+// context) does the actual instrumentation. We don't edit user code
+// here: real codebases exceed what we can snapshot, and template-based
+// fallbacks hallucinate against moving SDKs.
 export const instrumentStep: Step = {
   name: "instrument",
 
@@ -73,9 +51,7 @@ export const instrumentStep: Step = {
       };
     }
 
-    // Extra gap above each section heading creates breathing room and
-    // signals "new chapter". Inside the section we rely on clack's
-    // default spacing between log calls and confirms.
+    // Extra gap above the heading signals "new chapter".
     p.log.message("");
     p.log.step(pc.bold("Instrumentation"));
     p.log.info(
@@ -113,18 +89,15 @@ export const instrumentStep: Step = {
 
     p.log.success("Prompt copied to your clipboard.");
 
-    // Gap row separates the post-copy receipt from the next question.
-    // Without it, the paste instruction visually attaches to the copy
-    // result instead of pairing with the "Ready to continue?" confirm
-    // below it.
+    // Gap so the paste instruction pairs with the confirm below
+    // instead of attaching to the copy receipt above.
     p.log.message("");
     p.log.info(
       "Paste it into your AI coding agent (Claude Code, Cursor, Windsurf, …) and come back here.",
     );
 
-    // Gate on explicit acknowledgement before moving to MCP setup —
-    // without this, the wizard blows past the paste step and the user
-    // misses the handoff.
+    // Gate on explicit acknowledgement so the wizard doesn't blow past
+    // the paste step.
     const ready = await p.confirm({
       message: "Ready to continue here while your agent works?",
       initialValue: true,
@@ -134,13 +107,8 @@ export const instrumentStep: Step = {
       return { status: "failed", message: "User cancelled" };
     }
 
-    // Success-summary reads this to show accurate status + "Next"
-    // wording (avoids lying about clipboard state when the copy was
-    // declined, failed, or the prompt fetch didn't even return one).
     ctx.promptCopied = true;
 
-    // Note: the pipeline pushes step.name to completedSteps on the
-    // "completed" path — don't push again here or we'd duplicate.
     return {
       status: "completed",
       message: "Prompt handed off to user's coding agent",
@@ -148,11 +116,8 @@ export const instrumentStep: Step = {
   },
 };
 
-/**
- * Fetch the framework-specific prompt from the public API. Returns
- * null on timeout, network error, non-2xx, or malformed response —
- * the step falls back to showing a docs URL in any of those cases.
- */
+// Returns null on timeout, network error, non-2xx, or malformed
+// response. The step falls back to showing a docs URL in those cases.
 async function fetchPrompt(
   ctx: WizardContext,
 ): Promise<PromptResponse | null> {
@@ -192,14 +157,7 @@ async function fetchPrompt(
   }
 }
 
-/**
- * Copy a string to the system clipboard using the platform native
- * clipboard tool. Returns true on success, false on any failure.
- *
- * - macOS: `pbcopy`
- * - Windows: `clip`
- * - Linux: `xclip -selection clipboard`, falling back to `xsel`
- */
+// macOS: pbcopy. Windows: clip. Linux: xclip, falling back to xsel.
 function copyToClipboard(text: string): boolean {
   try {
     if (process.platform === "darwin") {

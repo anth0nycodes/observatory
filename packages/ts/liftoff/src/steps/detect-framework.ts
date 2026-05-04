@@ -4,13 +4,9 @@ import { FRAMEWORKS, type Framework, type PackageManager, type Step, type StepRe
 import { detectFramework, detectLanguage } from "../utils/framework-detection.js";
 import { detectPackageManager } from "../utils/package-manager.js";
 
-/**
- * Collapse per-language duplicates: LangChain/LangGraph and Custom each
- * have TS and Python flavors (langchain-ts/langchain-python,
- * custom-ts/custom-python). Showing both in a single list produced two
- * identical-looking rows. Instead, surface these as "families" — if
- * the user picks one, a second prompt resolves the language.
- */
+// LangChain and Custom each have TS and Python flavors. Collapse them
+// into single "family" entries and ask for the language in a follow-up
+// prompt to avoid two identical-looking rows in the picker.
 type DisplayValue =
   | Framework
   | "__langchain__"
@@ -19,7 +15,7 @@ type DisplayValue =
 interface DisplayEntry {
   value: DisplayValue;
   name: string;
-  /** Language of the entry for sorting and hinting. "both" = family. */
+  /** "both" = family entry covering both languages. */
   lang: "typescript" | "python" | "both";
 }
 
@@ -35,11 +31,6 @@ const DISPLAY_ENTRIES: DisplayEntry[] = [
   { value: "agno", name: "Agno", lang: "python" },
 ];
 
-/**
- * Given a detected framework id, return what should be pre-selected
- * in the display prompt. Maps language-specific ids (e.g.
- * "langchain-ts") to their family value ("__langchain__").
- */
 function detectedToDisplayValue(
   detected: Framework | null,
 ): DisplayValue | undefined {
@@ -53,10 +44,6 @@ function detectedToDisplayValue(
   return detected;
 }
 
-/**
- * If the user picked a family, we know from detection (or ask) which
- * language flavor. Pre-select the detected variant.
- */
 function familyLangFromDetected(
   detected: Framework | null,
 ): "typescript" | "python" | undefined {
@@ -66,13 +53,6 @@ function familyLangFromDetected(
   return undefined;
 }
 
-/**
- * Pipeline step: detect the user's framework and package manager.
- *
- * Auto-detects the framework from project files and presents it for
- * confirmation. LangChain and Custom collapse to single entries with
- * a follow-up language prompt.
- */
 export const detectFrameworkStep: Step = {
   name: "detect-framework",
 
@@ -84,8 +64,8 @@ export const detectFrameworkStep: Step = {
     const detected = detectFramework(ctx.installDir);
     const detectedLang = detectLanguage(ctx.installDir);
 
-    // Order: put entries matching the detected language first,
-    // "both" families in the middle, then the other language.
+    // Entries matching the detected language come first, families in
+    // the middle, then the other language.
     const tsFirst = detectedLang !== "python";
     const primary = tsFirst ? "typescript" : "python";
     const secondary = tsFirst ? "python" : "typescript";
@@ -116,7 +96,6 @@ export const detectFrameworkStep: Step = {
       return { status: "failed", message: "User cancelled" };
     }
 
-    // Resolve the display choice to a concrete Framework id.
     let framework: Framework;
     if (choice === "__langchain__" || choice === "__custom__") {
       const presetLang = familyLangFromDetected(detected);
@@ -149,9 +128,7 @@ export const detectFrameworkStep: Step = {
     ctx.language =
       FRAMEWORKS.find((f) => f.id === framework)?.language ?? "unknown";
 
-    // Package manager: auto-detect from lockfile. Only prompt if the
-    // detection is ambiguous — nobody needs to be asked what PM they
-    // use when there's a pnpm-lock.yaml sitting right there.
+    // Auto-detect from lockfile, only prompt if ambiguous.
     const detectedPm = detectPackageManager(ctx.installDir, ctx.language);
 
     if (detectedPm) {

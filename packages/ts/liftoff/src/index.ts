@@ -14,34 +14,19 @@ import { setApiBase } from "./utils/config.js";
 const require = createRequire(import.meta.url);
 const pkg = require("../package.json") as { version: string };
 
-/**
- * Truecolor (24-bit) ANSI wrapper. Lets us emit the exact brand hex
- * for each chevron instead of the terminal-theme-dependent
- * picocolors ANSI-8 variant. Every modern terminal (iTerm2, Warp,
- * Terminal.app, VS Code, Alacritty, Kitty, Ghostty, WezTerm) renders
- * these faithfully.
- */
+// Truecolor (24-bit) ANSI wrapper. Emits exact brand hex instead of
+// the terminal-theme-dependent picocolors ANSI-8 variant.
 function rgb(r: number, g: number, b: number, text: string): string {
   return `\x1b[38;2;${r};${g};${b}m${text}\x1b[39m`;
 }
 
-// TCC brand chevron hexes, tuned against the logo PNG.
 const CHEV_BLUE = (t: string) => rgb(30, 143, 230, t); //  #1E8FE6
 const CHEV_YELLOW = (t: string) => rgb(255, 197, 39, t); // #FFC527
 const CHEV_RED = (t: string) => rgb(241, 57, 92, t); //   #F1395C
 
-/**
- * Print the liftoff banner: the three Context Company chevrons
- * (blue / yellow-split / red) next to TCC in ANSI-shadow block
- * letters, with the company name as a subtitle. Rendered before the
- * wizard so the terminal has a distinct brand frame on launch.
- */
 function printBanner(): void {
-  // Each chevron is 5 rows of 4-wide block pixels (up from 2-wide
-  // before — gives the diagonals more visual weight without looking
-  // cartoonish). Trailing empty row aligns the chevron baseline with
-  // the 6-row TCC block. Middle chevron has a hollow apex — mirrors
-  // the split/dashed middle chevron in the actual logo.
+  // Middle chevron has a hollow apex to mirror the split chevron in
+  // the actual logo.
   const solid = [
     "████    ",
     "  ████  ",
@@ -108,9 +93,7 @@ ${pc.dim("Options:")}
     process.exit(0);
   }
 
-  // Parse --api-base (both `--api-base <url>` and `--api-base=<url>` forms).
-  // One flag drives every TCC endpoint the wizard touches, plus the MCP URL
-  // baked into editor configs. See src/utils/config.ts for the resolver.
+  // Accept both `--api-base <url>` and `--api-base=<url>` forms.
   const apiBaseIdx = args.indexOf("--api-base");
   const apiBaseFromEqual = args
     .find((a) => a.startsWith("--api-base="))
@@ -126,11 +109,6 @@ ${pc.dim("Options:")}
     completedSteps: [],
   };
 
-  // Pipeline: sign in (optional) → provision prod key if signed in →
-  // pick framework → hand off the agent prompt → optionally wire MCP
-  // (OAuth-based, runs even without sign-in) → optionally wire Slack
-  // → summary. If the user skips sign-in, success-summary points them
-  // at the dashboard to grab an API key manually.
   const steps: Step[] = [
     authStep,
     provisionKeysStep,
