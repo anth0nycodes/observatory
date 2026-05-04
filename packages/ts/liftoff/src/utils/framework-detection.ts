@@ -125,6 +125,10 @@ export function detectFramework(
       return "langchain-python";
     }
 
+    if (hasPythonDep(deps, "claude-agent-sdk")) {
+      return "claude-agent-sdk-python";
+    }
+
     if (hasPythonDep(deps, "crewai")) {
       return "crewai";
     }

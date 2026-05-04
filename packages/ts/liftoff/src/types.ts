@@ -1,6 +1,7 @@
 export type Framework =
   | "nextjs-aisdk"
   | "claude-agent-sdk"
+  | "claude-agent-sdk-python"
   | "langchain-ts"
   | "mastra"
   | "pi-mono"
@@ -42,7 +43,8 @@ export const FRAMEWORKS: FrameworkInfo[] = [
     id: "claude-agent-sdk",
     name: "Claude Agent SDK",
     description: "Instrument Claude Agent SDK agents",
-    docsUrl: "https://docs.thecontext.company/frameworks/claude-agent-sdk",
+    docsUrl:
+      "https://docs.thecontext.company/frameworks/claude-agent-sdk#typescript",
     language: "typescript",
   },
   {
@@ -86,6 +88,14 @@ export const FRAMEWORKS: FrameworkInfo[] = [
     name: "LangChain / LangGraph",
     description: "Instrument LangChain and LangGraph agents",
     docsUrl: "https://docs.thecontext.company/frameworks/langchain-langgraph",
+    language: "python",
+  },
+  {
+    id: "claude-agent-sdk-python",
+    name: "Claude Agent SDK",
+    description: "Instrument Claude Agent SDK agents",
+    docsUrl:
+      "https://docs.thecontext.company/frameworks/claude-agent-sdk#python",
     language: "python",
   },
   {

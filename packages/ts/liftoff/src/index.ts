@@ -3,11 +3,12 @@ import * as p from "@clack/prompts";
 import pc from "picocolors";
 import { runPipeline } from "./pipeline.js";
 import { authStep } from "./steps/auth.js";
-import { gitCheckStep } from "./steps/git-check.js";
-import { installPackagesStep } from "./steps/install-packages.js";
+import { detectFrameworkStep } from "./steps/detect-framework.js";
 import { instrumentStep } from "./steps/instrument.js";
-import { placeholderSteps } from "./steps/placeholder.js";
 import { provisionKeysStep } from "./steps/provision-keys.js";
+import { setupMcpStep } from "./steps/setup-mcp.js";
+import { setupSlackStep } from "./steps/setup-slack.js";
+import { successSummaryStep } from "./steps/success-summary.js";
 import type { Step, WizardContext } from "./types.js";
 import { setApiBase } from "./utils/config.js";
 
@@ -124,18 +125,7 @@ ${pc.dim("Options:")}
     process.exit(1);
   }
 
-  // Outro
-  p.outro(
-    `${pc.green("You're all set!")} ${pc.dim("Happy building!")}`,
-  );
-}
-
-/**
- * Assemble the ordered list of pipeline steps.
- * Each phase adds its steps here as they are implemented.
- */
-async function getSteps(): Promise<Step[]> {
-  return [gitCheckStep, authStep, provisionKeysStep, ...placeholderSteps];
+  p.outro(`${pc.green("You're all set!")} ${pc.dim("Happy building!")}`);
 }
 
 main().catch((err) => {
