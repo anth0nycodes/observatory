@@ -145,7 +145,7 @@ export interface WizardContext {
   user?: { id: string; email: string; firstName?: string };
   organizationId?: string;
   completedSteps: string[];
-  slackConnected?: boolean;
+  slackOpened?: boolean;
   editorsConfigured?: string[];
   promptCopied?: boolean;
 }

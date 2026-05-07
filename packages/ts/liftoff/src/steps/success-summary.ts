@@ -49,9 +49,9 @@ export const successSummaryStep: Step = {
       );
     }
 
-    if (ctx.slackConnected) {
+    if (ctx.slackOpened) {
       lines.push(
-        `${pc.dim("Slack")}        ${pc.green("Connected")}`,
+        `${pc.dim("Slack")}        ${pc.yellow("Finish in browser")}`,
       );
     } else {
       lines.push(
