@@ -63,7 +63,10 @@ export const provisionKeysStep: Step = {
         p.log.error(
           `Status: ${response.status} | Error: ${detail} | OrgId sent: ${ctx.organizationId ?? "null"}`,
         );
-        return { status: "failed", message: detail };
+        // Skip rather than fail: the rest of the wizard (MCP, Slack,
+        // summary) still has value, and the success summary already
+        // tells the user to grab a key from the dashboard.
+        return { status: "skipped", message: detail };
       }
 
       const data = (await response.json()) as {
@@ -117,7 +120,7 @@ export const provisionKeysStep: Step = {
       const message =
         error instanceof Error ? error.message : String(error);
       p.log.error(`Key provisioning failed: ${message}`);
-      return { status: "failed", message };
+      return { status: "skipped", message };
     }
   },
 };

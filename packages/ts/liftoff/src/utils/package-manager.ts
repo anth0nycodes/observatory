@@ -24,32 +24,19 @@ const PYTHON_LOCKFILES: LockfileEntry[] = [
   { file: "poetry.lock", pm: "poetry" },
 ];
 
-/**
- * Detect the package manager used in the project by checking
- * for lockfiles.
- *
- * For TypeScript projects, checks for bun.lockb, bun.lock,
- * pnpm-lock.yaml, yarn.lock, and package-lock.json. Falls
- * back to npm.
- *
- * For Python projects, checks for uv.lock and poetry.lock.
- * Falls back to pip.
- *
- * @param installDir - Root directory of the project
- * @param language - Detected project language
- * @returns The detected package manager
- */
+// Returns null when no lockfile is present so the caller can prompt
+// instead of silently picking a default the user never asked for.
 export function detectPackageManager(
   installDir: string,
   language: ProjectLanguage,
-): PackageManager {
+): PackageManager | null {
   if (language === "typescript") {
     for (const { file, pm } of TS_LOCKFILES) {
       if (fs.existsSync(path.join(installDir, file))) {
         return pm;
       }
     }
-    return "npm";
+    return null;
   }
 
   if (language === "python") {
@@ -58,10 +45,9 @@ export function detectPackageManager(
         return pm;
       }
     }
-    return "pip";
+    return null;
   }
 
-  // Unknown language: try TS lockfiles first, then Python
   for (const { file, pm } of TS_LOCKFILES) {
     if (fs.existsSync(path.join(installDir, file))) {
       return pm;
@@ -72,7 +58,7 @@ export function detectPackageManager(
       return pm;
     }
   }
-  return "npm";
+  return null;
 }
 
 /**
