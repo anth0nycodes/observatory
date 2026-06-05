@@ -16,7 +16,6 @@ interface PromptResponse {
   docsUrl?: string;
   frameworkName?: string;
 }
-
 // Fetches a framework-specific prompt from the API and hands it off via
 // the clipboard so the user's coding agent (which already has full repo
 // context) does the actual instrumentation. We don't edit user code
@@ -185,4 +184,3 @@ function copyToClipboard(text: string): boolean {
     return false;
   }
 }
-

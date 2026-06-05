@@ -10,7 +10,6 @@ interface PackageJson {
   dependencies?: Record<string, string>;
   devDependencies?: Record<string, string>;
 }
-
 function hasDep(pkg: PackageJson, name: string): boolean {
   return !!(
     pkg.dependencies?.[name] || pkg.devDependencies?.[name]
@@ -142,4 +141,3 @@ export function detectFramework(
 
   return null;
 }
-
