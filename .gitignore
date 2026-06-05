@@ -7,3 +7,7 @@ dist
 packages/widget/src/styles.css
 .claude/
 __pycache__/
+.planning/
+package-lock.json
+CLAUDE.md
+.codex/

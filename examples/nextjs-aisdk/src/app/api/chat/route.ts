@@ -25,6 +25,11 @@ export async function POST(req: Request) {
       metadata: {
         "tcc.runId": runId, // TCC: Special Unique ID for this AI call
         "tcc.sessionId": sessionId, // TCC: Special Unique ID for conversation tracking
+        "tcc.userId": "1234567890", // TCC: Unique ID for the user
+        "tcc.userName": "John Doe", // TCC: Name of the user
+        "tcc.orgId": "178943", // TCC: Organization ID
+        "tcc.orgName": "Acme Inc", // TCC: Organization Name
+        "tcc.agent": "weather-assistant", // TCC: Agent name
 
         // TCC: Add your own metadata here (to filter and group events in dashboard)
         yourCustomMetadata: "yourCustomValue",
