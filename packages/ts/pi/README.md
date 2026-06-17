@@ -78,7 +78,6 @@ instrumentPiSession(session, {
 | Option           | Type                      | Default           | Description                 |
 | ---------------- | ------------------------- | ----------------- | --------------------------- |
 | `apiKey`         | `string`                  | `TCC_API_KEY` env | TCC API key                 |
-| `endpoint`       | `string`                  | Auto-detected     | Custom TCC endpoint URL     |
 | `runId`          | `string`                  | Auto-generated    | Fixed run ID for all runs   |
 | `sessionId`      | `string`                  | —                 | Group related runs together |
 | `conversational` | `boolean`                 | —                 | Mark as conversational flow |
@@ -90,5 +89,4 @@ instrumentPiSession(session, {
 | Variable       | Description                                                |
 | -------------- | ---------------------------------------------------------- |
 | `TCC_API_KEY`  | Your Context Company API key                               |
-| `TCC_BASE_URL` | Custom TCC base URL (overrides auto-detection)             |
 | `TCC_DEBUG`    | Enable debug logging for SDK and extension instrumentation |
