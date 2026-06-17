@@ -25,6 +25,8 @@ export TCC_API_KEY="your_api_key"
 ./node_modules/.bin/pi
 ```
 
+The project-local `.pi/tcc.json` file adds example metadata, including reserved `tcc.sessionId` and `tcc.conversational` fields.
+
 The extension records Pi agent runs, messages, and tool executions automatically. Use `/tcc-status` inside Pi to check that it is active.
 
 For a local no-LLM smoke test of the extension event flow:

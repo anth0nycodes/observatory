@@ -5,7 +5,7 @@ import { config } from "dotenv";
 config();
 
 async function startCollector(): Promise<{
-  endpoint: string;
+  baseUrl: string;
   payloads: unknown[];
   close: () => Promise<void>;
 }> {
@@ -31,7 +31,7 @@ async function startCollector(): Promise<{
   }
 
   return {
-    endpoint: `http://127.0.0.1:${address.port}/v1/pi`,
+    baseUrl: `http://127.0.0.1:${address.port}`,
     payloads,
     close: () =>
       new Promise((resolve, reject) => {
@@ -40,24 +40,20 @@ async function startCollector(): Promise<{
   };
 }
 
-async function runPiWithExtension(endpoint: string): Promise<number | null> {
+async function runPiWithExtension(baseUrl: string): Promise<number | null> {
   const prompt =
     process.argv.slice(2).join(" ") || "Say hello in one short sentence.";
 
-  const child = spawn(
-    "./node_modules/.bin/pi",
-    ["--no-tools", "-p", prompt],
-    {
-      cwd: process.cwd(),
-      env: {
-        ...process.env,
-        TCC_API_KEY: "test-key",
-        TCC_PI_ENDPOINT: endpoint,
-        TCC_DEBUG: "true",
-      },
-      stdio: "inherit",
-    }
-  );
+  const child = spawn("./node_modules/.bin/pi", ["--no-tools", "-p", prompt], {
+    cwd: process.cwd(),
+    env: {
+      ...process.env,
+      TCC_API_KEY: "test-key",
+      TCC_BASE_URL: baseUrl,
+      TCC_DEBUG: "true",
+    },
+    stdio: "inherit",
+  });
 
   return new Promise((resolve) => {
     child.on("close", resolve);
@@ -68,7 +64,7 @@ async function main(): Promise<void> {
   const collector = await startCollector();
 
   try {
-    const code = await runPiWithExtension(collector.endpoint);
+    const code = await runPiWithExtension(collector.baseUrl);
     if (code !== 0) {
       throw new Error(`Pi exited with code ${code}`);
     }
@@ -81,6 +77,7 @@ async function main(): Promise<void> {
           messages: payload.messages?.length ?? 0,
           toolExecutions: payload.toolExecutions?.length ?? 0,
           conversational: payload.conversational,
+          metadata: payload.metadata,
         })),
         null,
         2

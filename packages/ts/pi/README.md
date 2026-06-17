@@ -20,6 +20,19 @@ export TCC_API_KEY="your_api_key"
 
 Start Pi as usual. The extension automatically records Pi agent runs, messages, and tool executions. Run `/tcc-status` inside Pi to confirm the extension is active.
 
+To attach metadata to extension runs, add `.pi/tcc.json` to your project:
+
+```json
+{
+  "metadata": {
+    "userId": "user-123",
+    "environment": "staging",
+    "tcc.sessionId": "conversation-123",
+    "tcc.conversational": true
+  }
+}
+```
+
 ### Programmatic SDK instrumentation
 
 #### 1. Install
@@ -74,16 +87,8 @@ instrumentPiSession(session, {
 
 ## Environment Variables
 
-| Variable             | Description                                                 |
-| -------------------- | ----------------------------------------------------------- |
-| `TCC_API_KEY`        | Your Context Company API key                                |
-| `TCC_BASE_URL`       | Custom TCC base URL (overrides auto-detection)              |
-| `TCC_PI_ENDPOINT`    | Custom Pi ingestion endpoint URL                            |
-| `TCC_SESSION_ID`     | Session ID used by the Pi extension                         |
-| `TCC_CONVERSATIONAL` | Set to `false` to mark extension runs as non-conversational |
-| `TCC_AGENT_NAME`     | Agent name attached as `tcc.agent` metadata                 |
-| `TCC_USER_ID`        | User ID attached as `tcc.userId` metadata                   |
-| `TCC_USER_NAME`      | User name attached as `tcc.userName` metadata               |
-| `TCC_ORG_ID`         | Organization ID attached as `tcc.orgId` metadata            |
-| `TCC_ORG_NAME`       | Organization name attached as `tcc.orgName` metadata        |
-| `TCC_DEBUG`          | Enable debug logging for SDK and extension instrumentation  |
+| Variable       | Description                                                |
+| -------------- | ---------------------------------------------------------- |
+| `TCC_API_KEY`  | Your Context Company API key                               |
+| `TCC_BASE_URL` | Custom TCC base URL (overrides auto-detection)             |
+| `TCC_DEBUG`    | Enable debug logging for SDK and extension instrumentation |

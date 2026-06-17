@@ -1,0 +1,8 @@
+{
+  "metadata": {
+    "example": "pi-extension",
+    "environment": "local",
+    "tcc.sessionId": "pi-example-session",
+    "tcc.conversational": true
+  }
+}

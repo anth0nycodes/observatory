@@ -1,3 +1,6 @@
+import { existsSync, readFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import { createPiTelemetryListener } from "./instrument";
 import { setDebug } from "./logger";
 import type { TCCPiConfig } from "./types";
@@ -27,31 +30,54 @@ function envFlag(value: string | undefined): boolean {
   return value === "1" || value === "true" || value === "yes";
 }
 
-function loadConfig(): TCCPiConfig {
-  const metadata: Record<string, unknown> = {};
+type ExtensionConfigFile = {
+  metadata?: Record<string, unknown>;
+};
 
-  if (process.env.TCC_AGENT_NAME) {
-    metadata["tcc.agent"] = process.env.TCC_AGENT_NAME;
+function readConfigFile(path: string): ExtensionConfigFile {
+  if (!existsSync(path)) return {};
+
+  try {
+    const parsed = JSON.parse(readFileSync(path, "utf8"));
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      console.warn(`[TCC Pi] Ignoring ${path}: expected a JSON object.`);
+      return {};
+    }
+
+    const metadata = (parsed as ExtensionConfigFile).metadata;
+    if (
+      metadata !== undefined &&
+      (!metadata || typeof metadata !== "object" || Array.isArray(metadata))
+    ) {
+      console.warn(
+        `[TCC Pi] Ignoring metadata in ${path}: expected an object.`
+      );
+      return {};
+    }
+
+    return parsed as ExtensionConfigFile;
+  } catch (err) {
+    console.warn(`[TCC Pi] Ignoring invalid JSON in ${path}:`, err);
+    return {};
   }
-  if (process.env.TCC_USER_ID) {
-    metadata["tcc.userId"] = process.env.TCC_USER_ID;
-  }
-  if (process.env.TCC_USER_NAME) {
-    metadata["tcc.userName"] = process.env.TCC_USER_NAME;
-  }
-  if (process.env.TCC_ORG_ID) {
-    metadata["tcc.orgId"] = process.env.TCC_ORG_ID;
-  }
-  if (process.env.TCC_ORG_NAME) {
-    metadata["tcc.orgName"] = process.env.TCC_ORG_NAME;
-  }
+}
+
+function loadMetadata(): Record<string, unknown> {
+  const globalConfig = readConfigFile(
+    join(homedir(), ".pi", "agent", "tcc.json")
+  );
+  const projectConfig = readConfigFile(join(process.cwd(), ".pi", "tcc.json"));
 
   return {
-    endpoint: process.env.TCC_PI_ENDPOINT,
-    sessionId: process.env.TCC_SESSION_ID,
-    conversational: process.env.TCC_CONVERSATIONAL
-      ? envFlag(process.env.TCC_CONVERSATIONAL)
-      : true,
+    ...(globalConfig.metadata ?? {}),
+    ...(projectConfig.metadata ?? {}),
+  };
+}
+
+function loadConfig(): TCCPiConfig {
+  const metadata = loadMetadata();
+
+  return {
     metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
     debug: envFlag(process.env.TCC_DEBUG),
   };
